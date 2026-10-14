@@ -31,3 +31,5 @@ exports.connect = (app) => {
 
   connectWithRetry();
 };
+
+exports.mongoose = mongoose;

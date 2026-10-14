@@ -20,6 +20,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+
+
+app.get("/health", (req, res) => {
+  const isConnected = db.mongoose.connection.readyState === 1;
+
+  if (isConnected) {
+    return res.status(200).json({
+      status: "healthy",
+      database: "connected"
+    });
+  }
+
+  return res.status(503).json({
+    status: "unhealthy",
+    database: "disconnected"
+  });
+});
+
+
 // Routes
 require("./routes")(app);
 
