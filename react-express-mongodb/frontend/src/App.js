@@ -27,13 +27,13 @@ export default class App extends React.Component {
   handleAddTodo = (value) => {
     axios
       .post("/api/todos", { text: value })
-      .then(() => {
-        this.setState({
-          todos: [...this.state.todos, { text: value }],
-        });
+      .then((response) => {
+        this.setState((prevState) => ({
+          todos: [...prevState.todos, response.data.data],
+        }));
       })
-      .catch((e) => console.log("Error : ", e));
-  };
+      .catch((e) => console.log("Error:", e));
+  }
 
   render() {
     return (

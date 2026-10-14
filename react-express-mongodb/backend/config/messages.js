@@ -35,15 +35,16 @@ module.exports = {
     message: "Successfully completed",
   },
   NOT_FOUND: {
-    code: 404,
-    success: true,
-    message: "Requested API not found",
-  },
-  ALREADY_EXIST: {
-    code: 200,
-    success: true,
-    message: "Already exists",
-  },
+  code: 404,
+  success: false,
+  message: "Requested API not found",
+},
+
+ALREADY_EXIST: {
+  code: 409,
+  success: false,
+  message: "Already exists",
+},
   FORBIDDEN: {
     code: 403,
     message: "You are not authorized to complete this action",

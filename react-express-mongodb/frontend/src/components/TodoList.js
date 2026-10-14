@@ -24,7 +24,7 @@ export default class TodoList extends React.Component {
               "list-group-item cursor-pointer " +
               (i === this.state.activeIndex ? "active" : "")
             }
-            key={i}
+            key={todo._id}
             onClick={() => {
               this.handleActive(i);
             }}

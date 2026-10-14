@@ -1,14 +1,19 @@
-/**
- * Created by Syed Afzal
- */
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const Todo = mongoose.model('Todo', {
-    text : {
-        type: String,
-        trim: true,
-        required: true
-    }
-});
+const todoSchema = new mongoose.Schema(
+  {
+    text: {
+      type: String,
+      required: [true, "Todo text is required"],
+      trim: true,
+      maxlength: [500, "Todo text cannot exceed 500 characters"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = {Todo};
+const Todo = mongoose.model("Todo", todoSchema);
+
+module.exports = { Todo };
