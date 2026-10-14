@@ -4,7 +4,7 @@ You will find this `DockerFile` inside **frontend** directory.
 
 ```bash
 # Create image based on the official Node image from dockerhub
-FROM node:10
+FROM node:22-bookworm-slim
 #Argument that is passed from docer-compose.yaml file
 ARG FRONT_END_PORT
 # Create app directory

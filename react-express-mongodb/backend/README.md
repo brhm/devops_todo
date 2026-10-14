@@ -3,7 +3,7 @@
 You will find this `DockerFile` file in the root directory of the project.
 
 ```bash
-FROM node:13.13.0-stretch-slim
+FROM node:22-bookworm-slim
 #Argument that is passed from docer-compose.yaml file
 ARG NODE_PORT
 #Echo the argument to check passed argument loaded here correctly
