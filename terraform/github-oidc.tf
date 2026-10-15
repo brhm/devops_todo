@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:brhm/devops_todo:ref:refs/heads/master"]
+      values   = ["repo:brhm@12158748/devops_todo@1418724225:ref:refs/heads/master"]
     }
   }
 }
