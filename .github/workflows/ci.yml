@@ -56,3 +56,36 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-todo-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-todo-frontend:${{ github.sha }}
+
+  deploy-eks:
+    name: Deploy to Amazon EKS
+    needs: docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::344730535071:role/devops-todo-github-actions
+          aws-region: eu-central-1
+
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig \
+            --region eu-central-1 \
+            --name devops-todo-eks
+
+      - name: Deploy backend
+        run: |
+          kubectl -n devops-todo set image deployment/backend \
+            backend=brhmkskn/devops-todo-backend:${{ github.sha }}
+
+      - name: Deploy frontend
+        run: |
+          kubectl -n devops-todo set image deployment/frontend \
+            frontend=brhmkskn/devops-todo-frontend:${{ github.sha }}
+
+      - name: Verify deployments
+        run: |
+          kubectl -n devops-todo rollout status deployment/backend --timeout=180s
+          kubectl -n devops-todo rollout status deployment/frontend --timeout=180s
