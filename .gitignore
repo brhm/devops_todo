@@ -16,3 +16,13 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 terraform/.terraform.lock.hcl
+
+# Helm downloaded charts
+/grafana/
+/prometheus/
+
+# Helm generated manifests
+/*-rendered.yaml
+
+# Helm reference values
+/loki-default-values.yaml
