@@ -1,3 +1,6 @@
+deploymentStrategy:
+  type: Recreate
+
 replicas: 1
 
 resources:
@@ -24,4 +27,10 @@ datasources:
         access: proxy
         url: http://prometheus-server.monitoring.svc.cluster.local
         isDefault: true
+        editable: true
+
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
         editable: true
