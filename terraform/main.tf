@@ -52,9 +52,12 @@ module "eks" {
 
   addons = {
     vpc-cni = {
-      before_compute = true
-    }
+        before_compute = true
 
+        configuration_values = jsonencode({
+            enableNetworkPolicy = "true"
+        })
+    }
     kube-proxy = {}
 
     coredns = {}
