@@ -9,6 +9,12 @@
     resources  = ["pods/portforward"]
     verbs      = ["create"]
   }
+  rule {
+  api_groups     = [""]
+  resources      = ["services"]
+  resource_names = ["backend"]
+  verbs          = ["get"]
+}
 }
 
 resource "kubernetes_role_binding_v1" "github_actions_load_test" {
