@@ -1,0 +1,65 @@
+﻿name: k6 Load Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::344730535071:role/devops-todo-github-actions
+          aws-region: eu-central-1
+
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig \
+            --region eu-central-1 \
+            --name devops-todo-eks
+
+      - name: Start backend port-forward
+        run: |
+          kubectl -n devops-todo port-forward svc/backend 3001:3000 > /tmp/port-forward.log 2>&1 &
+          echo $! > /tmp/port-forward.pid
+
+          for i in {1..30}; do
+            if curl --silent --fail http://127.0.0.1:3001/health > /dev/null; then
+              echo "Backend is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          cat /tmp/port-forward.log
+          exit 1
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo apt-get update
+          sudo apt-get install -y gnupg ca-certificates
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: Run k6 load test
+        env:
+          BASE_URL: http://127.0.0.1:3001
+        run: |
+          k6 run --vus 5 --duration 30s load-test.js
+
+      - name: Show port-forward logs on failure
+        if: failure()
+        run: cat /tmp/port-forward.log || true
