@@ -9,3 +9,18 @@ provider "aws" {
     }
   }
 }
+data "aws_eks_cluster" "current" {
+  name = "devops-todo-eks"
+}
+
+data "aws_eks_cluster_auth" "current" {
+  name = data.aws_eks_cluster.current.name
+}
+
+provider "helm" {
+  kubernetes = {
+    host                   = data.aws_eks_cluster.current.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.current.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.current.token
+  }
+}

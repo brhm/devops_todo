@@ -1,0 +1,20 @@
+cloudProvider: aws
+
+awsRegion: eu-central-1
+
+autoDiscovery:
+  clusterName: devops-todo-eks
+
+rbac:
+  create: true
+  serviceAccount:
+    create: true
+    name: cluster-autoscaler
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 256Mi
+priorityClassName: system-cluster-critical
